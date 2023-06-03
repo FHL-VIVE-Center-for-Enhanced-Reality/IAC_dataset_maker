@@ -1,5 +1,6 @@
 # IAC_dataset_maker
 A simple repository with a pipeline to identify and extract important camera data to be labelled.
+Works for .db3 and .mcap files
 
 ## Dataset Pipeline
 Use the following steps to extract data from a rosbag, remove image distortions, choose image segments with vehicles, and create a dataset to be labelled:
@@ -60,6 +61,7 @@ Use the following steps to extract data from a rosbag, remove image distortions,
 
 # Contact
 * Aman Saraf | [amansaraf99@gmail.com](mailto:amansaraf99@gmail.com)
+* Chris Lai  | [chrislai_502@berkeley.edu](mailto:chrislai_502@berkeley.edu)
 
     
 
