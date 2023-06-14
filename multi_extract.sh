@@ -103,7 +103,7 @@ done
 # ---------------------------------------------------------------------------- #
 echo "\n\nSearching DATA_DIR for ROSBAGS now...\n"
 sleep 5s
-find "$DATA_DIR" -iname "*.db3" -print0 | xargs -0 -I file dirname file | sort | uniq | while read d; do
+find "$DATA_DIR" \( -iname "*.db3" -o -iname "*.mcap" \) -print0 | xargs -0 -I file dirname file | sort | uniq | while read d; do
     ROSBAG_NAME=$(basename "$d")
 
     # ---------------------------------------------------------------------------- #
@@ -120,29 +120,29 @@ find "$DATA_DIR" -iname "*.db3" -print0 | xargs -0 -I file dirname file | sort |
     echo "----------------------------------------------------------------------------"
 
     # -------------------------- Create output Directory ------------------------- #
-    mkdir -p $OUTPUT_DIR
+    mkdir -p "$OUTPUT_DIR"
 
     # ------------------ Begin Extraction Based on User Setting ------------------ #
     if [ $VERBOSE -eq 1 ]; then
         if [ $UNDISTORT -eq 1 ]; then
-            python3 ros2bag_image_extractor.py "$d" $OUTPUT_DIR -vup $CALIB_DIR
+            python3 ros2bag_image_extractor.py "$d" "$OUTPUT_DIR" -vup "$CALIB_DIR"
         else 
-            python3 ros2bag_image_extractor.py "$d" $OUTPUT_DIR -v
+            python3 ros2bag_image_extractor.py "$d" "$OUTPUT_DIR" -v
         fi
     else
         if [ $UNDISTORT -eq 1 ]; then
-            python3 ros2bag_image_extractor.py "$d" $OUTPUT_DIR -up $CALIB_DIR
+            python3 ros2bag_image_extractor.py "$d" "$OUTPUT_DIR" -up "$CALIB_DIR"
         else
-            python3 ros2bag_image_extractor.py "$d" $OUTPUT_DIR
+            python3 ros2bag_image_extractor.py "$d" "$OUTPUT_DIR"
         fi
     fi
 
     # --------------------- Convert Extracted Images to Video -------------------- #
     if [ $MAKE_VID -eq 1 ]; then
-        for camera_output_dir in $OUTPUT_DIR/*/; do
-            cd $camera_output_dir
+        for camera_output_dir in "$OUTPUT_DIR"/*/; do
+            cd "$camera_output_dir"
             base_name=$(basename "$camera_output_dir")
-            ffmpeg -framerate 50 -pattern_type glob -i '*.jpg' -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p ../$base_name.mp4
+            ffmpeg -framerate 50 -pattern_type glob -i '*.jpg' -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p "../$base_name.mp4"
         done
     fi
 
